@@ -453,7 +453,7 @@ mod base64_light {
 
     pub fn base64_decode_bytes(data: &[u8]) -> Option<Vec<u8>> {
         let clean: Vec<u8> = data.iter().copied().filter(|&c| c != b'=' && c != b'\n' && c != b'\r' && c != b' ').collect();
-        if clean.len() % 4 != 0 && data.iter().any(|&c| c == b'=') {
+        if !clean.len().is_multiple_of(4) && data.contains(&b'=') {
             // padded but wrong length — still try
         }
         let mut out = Vec::new();
@@ -472,6 +472,7 @@ mod base64_light {
         Some(out)
     }
 
+        #[allow(dead_code)]
     pub fn base64_encode_bytes(data: &[u8]) -> Vec<u8> {
         base64_encode(data).into_bytes()
     }
